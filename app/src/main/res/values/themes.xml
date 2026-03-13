@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Base App Theme -->
+    <style name="Theme.JTExpress" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/jt_red</item>
+        <item name="colorPrimaryDark">@color/jt_red_dark</item>
+        <item name="colorAccent">@color/jt_yellow</item>
+        <item name="android:windowBackground">@color/jt_white</item>
+        <item name="android:statusBarColor">@color/jt_red_dark</item>
+    </style>
+
+    <!-- Splash Screen Theme (Fullscreen) -->
+    <style name="Theme.JTExpress.Splash" parent="Theme.JTExpress">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowBackground">@color/jt_red</item>
+        <item name="android:statusBarColor">@color/jt_red</item>
+        <item name="android:navigationBarColor">@color/jt_red</item>
+    </style>
+
+    <!-- Login Screen Theme -->
+    <style name="Theme.JTExpress.Login" parent="Theme.JTExpress">
+        <item name="android:statusBarColor">@color/jt_red</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+    </style>
+
+    <!-- EditText Input Style -->
+    <style name="JT.InputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/jt_red</item>
+        <item name="hintTextColor">@color/jt_red</item>
+        <item name="android:textColorHint">@color/jt_text_hint</item>
+    </style>
+
+    <!-- Primary Button Style -->
+    <style name="JT.Button.Primary" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/jt_red</item>
+        <item name="android:textColor">@color/jt_white</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:letterSpacing">0.1</item>
+        <item name="cornerRadius">8dp</item>
+        <item name="android:paddingTop">14dp</item>
+        <item name="android:paddingBottom">14dp</item>
+    </style>
+
+    <!-- Google Button Style -->
+    <style name="JT.Button.Google" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="strokeColor">@color/jt_divider</item>
+        <item name="android:textColor">@color/jt_black</item>
+        <item name="android:textSize">15sp</item>
+        <item name="cornerRadius">8dp</item>
+        <item name="android:paddingTop">14dp</item>
+        <item name="android:paddingBottom">14dp</item>
+    </style>
+
+</resources>

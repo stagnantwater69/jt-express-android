@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/jt_red">
+
+    <!-- Background decorative circle (top-right) -->
+    <View
+        android:id="@+id/circle_top"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:background="@drawable/circle_light_overlay"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="-60dp"
+        android:layout_marginEnd="-60dp"
+        android:alpha="0.15"/>
+
+    <!-- Background decorative circle (bottom-left) -->
+    <View
+        android:id="@+id/circle_bottom"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:background="@drawable/circle_light_overlay"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginBottom="-40dp"
+        android:layout_marginStart="-40dp"
+        android:alpha="0.15"/>
+
+    <!-- Center content group -->
+    <LinearLayout
+        android:id="@+id/center_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- App Icon / Logo Container -->
+        <FrameLayout
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:background="@drawable/circle_white_bg"
+            android:layout_gravity="center">
+
+            <!-- J&T Logo Text (replace with actual ImageView once logo is added) -->
+            <TextView
+                android:id="@+id/tv_logo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="J&amp;T"
+                android:textColor="@color/jt_red"
+                android:textSize="36sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.05"/>
+        </FrameLayout>
+
+        <!-- App Name -->
+        <TextView
+            android:id="@+id/tv_app_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="J&amp;T Express"
+            android:textColor="@color/jt_white"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:layout_marginTop="20dp"
+            android:letterSpacing="0.03"/>
+
+        <!-- Tagline -->
+        <TextView
+            android:id="@+id/tv_tagline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fast &amp; Reliable Delivery"
+            android:textColor="@color/jt_white"
+            android:textSize="14sp"
+            android:alpha="0.85"
+            android:layout_marginTop="6dp"
+            android:letterSpacing="0.05"/>
+
+    </LinearLayout>
+
+    <!-- Loading indicator at bottom -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="60dp">
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            style="@style/Widget.AppCompat.ProgressBar"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:indeterminateTint="@color/jt_white"
+            android:layout_gravity="center"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Loading..."
+            android:textColor="@color/jt_white"
+            android:textSize="12sp"
+            android:alpha="0.7"
+            android:layout_marginTop="8dp"
+            android:layout_gravity="center"/>
+    </LinearLayout>
+
+    <!-- Version text -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="v1.0.0"
+        android:textColor="@color/jt_white"
+        android:textSize="11sp"
+        android:alpha="0.5"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

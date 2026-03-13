@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- J&T Brand Colors -->
+    <color name="jt_red">#E2231A</color>
+    <color name="jt_red_dark">#B71C1C</color>
+    <color name="jt_red_light">#FF5252</color>
+    <color name="jt_yellow">#FFD600</color>
+    <color name="jt_white">#FFFFFF</color>
+    <color name="jt_black">#1A1A1A</color>
+    <color name="jt_gray">#757575</color>
+    <color name="jt_light_gray">#F5F5F5</color>
+    <color name="jt_divider">#E0E0E0</color>
+    <color name="jt_text_hint">#BDBDBD</color>
+    <color name="jt_overlay">#80000000</color>
+
+</resources>
