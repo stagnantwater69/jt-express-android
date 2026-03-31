@@ -15,7 +15,7 @@
         <View
             android:id="@+id/header_bg"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="220dp"
             android:background="@color/jt_red"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>
@@ -61,7 +61,6 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="@drawable/circle_white_bg">
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -120,7 +119,7 @@
             app:cardElevation="8dp"
             app:cardBackgroundColor="@color/jt_white"
             app:layout_constraintTop_toTopOf="@id/header_bg"
-            android:layout_marginTop="155dp">
+            android:layout_marginTop="175dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -128,25 +127,94 @@
                 android:orientation="vertical"
                 android:padding="24dp">
 
-                <!-- Full Name -->
+                <!-- NAME SECTION LABEL -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Full Name"
+                    android:textColor="@color/jt_red"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.08"
+                    android:layout_marginBottom="8dp"/>
+
+                <!-- First Name -->
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/til_fullname"
+                    android:id="@+id/til_firstname"
                     style="@style/JT.InputLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Full Name"
+                    android:hint="First Name"
                     app:startIconDrawable="@android:drawable/ic_menu_myplaces"
                     app:startIconTint="@color/jt_gray">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/et_fullname"
+                        android:id="@+id/et_firstname"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="textPersonName"
                         android:imeOptions="actionNext"
                         android:textSize="15sp"
-                        android:textColor="@color/jt_black"/>
+                        android:textColor="@color/jt_black"
+                        android:capitalize="words"/>
                 </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Middle Name + Last Name row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="12dp">
+
+                    <!-- Middle Initial (optional) -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_middlename"
+                        style="@style/JT.InputLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="Middle Name"
+                        android:layout_marginEnd="8dp"
+                        app:startIconDrawable="@android:drawable/ic_menu_myplaces"
+                        app:startIconTint="@color/jt_gray"
+                        app:helperText="Optional"
+                        app:helperTextTextColor="@color/jt_gray">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_middlename"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textPersonName"
+                            android:imeOptions="actionNext"
+                            android:textSize="15sp"
+                            android:textColor="@color/jt_black"
+                            android:capitalize="words"
+                            android:maxLength="20"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Last Name -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_lastname"
+                        style="@style/JT.InputLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="Last Name"
+                        app:startIconDrawable="@android:drawable/ic_menu_myplaces"
+                        app:startIconTint="@color/jt_gray">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_lastname"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textPersonName"
+                            android:imeOptions="actionNext"
+                            android:textSize="15sp"
+                            android:textColor="@color/jt_black"
+                            android:capitalize="words"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
 
                 <!-- Email -->
                 <com.google.android.material.textfield.TextInputLayout
