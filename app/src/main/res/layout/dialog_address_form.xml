@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <!-- First Name -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="First Name *"
+            android:textColor="#666666"
+            android:textSize="12sp"
+            android:layout_marginBottom="4dp"/>
+        <EditText
+            android:id="@+id/et_dialog_first_name"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="e.g. Juan"
+            android:textSize="13sp"
+            android:background="@drawable/rounded_border_bg"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:inputType="textPersonName"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Last Name -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Last Name *"
+            android:textColor="#666666"
+            android:textSize="12sp"
+            android:layout_marginBottom="4dp"/>
+        <EditText
+            android:id="@+id/et_dialog_last_name"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="e.g. Dela Cruz"
+            android:textSize="13sp"
+            android:background="@drawable/rounded_border_bg"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:inputType="textPersonName"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Phone -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mobile Number *"
+            android:textColor="#666666"
+            android:textSize="12sp"
+            android:layout_marginBottom="4dp"/>
+        <EditText
+            android:id="@+id/et_dialog_phone"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="09XXXXXXXXX"
+            android:textSize="13sp"
+            android:background="@drawable/rounded_border_bg"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:inputType="phone"
+            android:maxLength="11"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Province -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Province *"
+            android:textColor="#666666"
+            android:textSize="12sp"
+            android:layout_marginBottom="4dp"/>
+        <EditText
+            android:id="@+id/et_dialog_province"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="e.g. Cebu"
+            android:textSize="13sp"
+            android:background="@drawable/rounded_border_bg"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:inputType="textCapWords"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- City -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="City / Municipality *"
+            android:textColor="#666666"
+            android:textSize="12sp"
+            android:layout_marginBottom="4dp"/>
+        <EditText
+            android:id="@+id/et_dialog_city"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="e.g. Cebu City"
+            android:textSize="13sp"
+            android:background="@drawable/rounded_border_bg"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:inputType="textCapWords"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Barangay -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Barangay *"
+            android:textColor="#666666"
+            android:textSize="12sp"
+            android:layout_marginBottom="4dp"/>
+        <EditText
+            android:id="@+id/et_dialog_barangay"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="e.g. Lahug"
+            android:textSize="13sp"
+            android:background="@drawable/rounded_border_bg"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:inputType="textCapWords"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Street / Detailed Address -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Street / Detailed Address *"
+            android:textColor="#666666"
+            android:textSize="12sp"
+            android:layout_marginBottom="4dp"/>
+        <EditText
+            android:id="@+id/et_dialog_street"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:hint="House No., Street, Landmark..."
+            android:textSize="13sp"
+            android:background="@drawable/rounded_border_bg"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingTop="12dp"
+            android:inputType="textMultiLine"
+            android:gravity="top"
+            android:layout_marginBottom="4dp"/>
+    </LinearLayout>
+</ScrollView>

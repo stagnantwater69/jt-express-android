@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    dot_green.xml
+    Place in: res/drawable/
+    Green "online" status dot shown on the floating bubble.
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <solid android:color="#4CAF50"/>
+    <stroke
+        android:width="2dp"
+        android:color="#FFFFFF"/>
+</shape>

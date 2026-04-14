@@ -52,4 +52,11 @@
         <item name="android:paddingBottom">14dp</item>
     </style>
 
+    <!-- Translucent background for OverlayPermissionActivity -->
+    <style name="Theme.AppCompat.Translucent" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation</item>
+    </style>
+
 </resources>

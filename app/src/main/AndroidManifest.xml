@@ -2,7 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.jtexpress.app">
 
+    <!-- Internet for Firebase + Gemini API calls -->
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- Required for the floating AI bubble (draw over other apps) -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
+    <!-- Required for FloatingChatService to run as a foreground service -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:allowBackup="true"
@@ -12,7 +19,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.JTExpress">
 
-        <!-- SPLASH SCREEN -->
+        <!-- ════════════════════════════════════════
+             SPLASH SCREEN
+        ════════════════════════════════════════ -->
         <activity
             android:name=".SplashActivity"
             android:theme="@style/Theme.JTExpress.Splash"
@@ -24,7 +33,9 @@
             </intent-filter>
         </activity>
 
-        <!-- LOGIN SCREEN -->
+        <!-- ════════════════════════════════════════
+             AUTH SCREENS
+        ════════════════════════════════════════ -->
         <activity
             android:name=".LoginActivity"
             android:theme="@style/Theme.JTExpress.Login"
@@ -32,40 +43,57 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
 
-        <!-- REGISTER SCREEN -->
         <activity
             android:name=".RegisterActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
 
-        <!-- FORGOT PASSWORD SCREEN -->
         <activity
             android:name=".ForgotPasswordActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
 
-        <!-- MAIN DASHBOARD -->
-        <activity
-            android:name=".MainActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"/>
-
-        <!-- EMAIL VERIFICATION -->
         <activity
             android:name=".EmailVerificationActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
 
-        <!-- TODO: Add MainActivity here when ready -->
-        <!--
+        <!-- ════════════════════════════════════════
+             MAIN DASHBOARD
+        ════════════════════════════════════════ -->
         <activity
             android:name=".MainActivity"
             android:exported="false"
             android:screenOrientation="portrait"/>
-        -->
+
+        <!-- ════════════════════════════════════════
+             AI CHATBOT SCREEN
+        ════════════════════════════════════════ -->
+        <activity
+            android:name=".AiChatActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"/>
+
+        <!-- ════════════════════════════════════════
+             FLOATING BUBBLE PERMISSION HANDLER
+        ════════════════════════════════════════ -->
+        <activity
+            android:name=".OverlayPermissionActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.Translucent"/>
+
+        <!-- ════════════════════════════════════════
+             FLOATING BUBBLE SERVICE
+             (draws the draggable AI bubble over all screens)
+        ════════════════════════════════════════ -->
+        <service
+            android:name=".FloatingChatService"
+            android:enabled="true"
+            android:exported="false"/>
 
     </application>
 
