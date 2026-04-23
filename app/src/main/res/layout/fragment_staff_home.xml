@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F5F5">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Greeting -->
+        <TextView
+            android:id="@+id/tv_staff_greeting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Hello, Staff!"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="@color/jt_black"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Stats Row 1 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="12dp">
+
+            <!-- Pending Approvals -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="3dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:gravity="center">
+                    <TextView
+                        android:id="@+id/tv_pending_approvals"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textSize="28sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/jt_red" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Pending"
+                        android:textSize="12sp"
+                        android:textColor="@color/jt_gray" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Active Orders -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="3dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:gravity="center">
+                    <TextView
+                        android:id="@+id/tv_active_orders"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textSize="28sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/jt_black" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Active"
+                        android:textSize="12sp"
+                        android:textColor="@color/jt_gray" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+
+        <!-- Stats Row 2 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <!-- Delivered -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="3dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:gravity="center">
+                    <TextView
+                        android:id="@+id/tv_delivered_today"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textSize="28sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/jt_black" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Delivered"
+                        android:textSize="12sp"
+                        android:textColor="@color/jt_gray" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Available Riders -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="3dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:gravity="center">
+                    <TextView
+                        android:id="@+id/tv_available_riders"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textSize="28sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/jt_black" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Riders"
+                        android:textSize="12sp"
+                        android:textColor="@color/jt_gray" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+
+        <!-- Quick Action Buttons -->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_go_approval"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="Review Pending Approvals"
+            android:textColor="@android:color/white"
+            app:textAllCaps="false"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/bg_btn_red" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_go_orders"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="View All Orders"
+            android:textColor="@color/jt_red"
+            app:textAllCaps="false"
+            android:background="@drawable/bg_btn_outline_red" />
+
+    </LinearLayout>
+
+</ScrollView>

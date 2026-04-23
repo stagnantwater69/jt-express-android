@@ -12,5 +12,6 @@
     <color name="jt_divider">#E0E0E0</color>
     <color name="jt_text_hint">#BDBDBD</color>
     <color name="jt_overlay">#80000000</color>
+    <color name="jt_background">#F5F5F5</color>
 
 </resources>

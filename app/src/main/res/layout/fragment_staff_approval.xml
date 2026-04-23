@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F5F5F5">
+
+    <!-- Header -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pending Approvals"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@color/jt_black"
+        android:padding="16dp" />
+
+    <!-- Empty State -->
+    <TextView
+        android:id="@+id/tv_no_pending"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No pending orders."
+        android:gravity="center"
+        android:padding="32dp"
+        android:textSize="14sp"
+        android:textColor="@color/jt_gray"
+        android:visibility="gone" />
+
+    <!-- Cards Container -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/approval_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp" />
+
+    </ScrollView>
+
+</LinearLayout>

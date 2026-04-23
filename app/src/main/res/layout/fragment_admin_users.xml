@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@color/jt_background">
+
+    <!-- Role Filter Chips -->
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        android:layout_marginBottom="12dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/chip_role_all"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:text="All"
+                android:textSize="12sp"
+                android:gravity="center"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/bg_chip_selected"
+                android:textColor="@color/jt_white" />
+
+            <TextView
+                android:id="@+id/chip_role_customer"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:text="Customer"
+                android:textSize="12sp"
+                android:gravity="center"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/bg_chip_unselected"
+                android:textColor="@color/jt_black" />
+
+            <TextView
+                android:id="@+id/chip_role_rider"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:text="Rider"
+                android:textSize="12sp"
+                android:gravity="center"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/bg_chip_unselected"
+                android:textColor="@color/jt_black" />
+
+            <TextView
+                android:id="@+id/chip_role_staff"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:text="Staff"
+                android:textSize="12sp"
+                android:gravity="center"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/bg_chip_unselected"
+                android:textColor="@color/jt_black" />
+
+            <TextView
+                android:id="@+id/chip_role_admin"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:text="Admin"
+                android:textSize="12sp"
+                android:gravity="center"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:background="@drawable/bg_chip_unselected"
+                android:textColor="@color/jt_black" />
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <!-- Empty state -->
+    <TextView
+        android:id="@+id/tv_no_users"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No users found."
+        android:textSize="14sp"
+        android:textColor="@color/jt_gray"
+        android:gravity="center"
+        android:padding="24dp"
+        android:visibility="gone" />
+
+    <!-- User cards -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:id="@+id/users_list_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+    </ScrollView>
+
+</LinearLayout>

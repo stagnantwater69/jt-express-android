@@ -1,4 +1,4 @@
-package com.jtexpress.app
+package com.jtexpress.app.shared
 
 import android.content.Intent
 import android.os.Bundle
@@ -18,6 +18,7 @@ import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.jtexpress.app.R
 
 class RegisterActivity : AppCompatActivity() {
 

@@ -1,0 +1,195 @@
+package com.jtexpress.app
+
+import android.app.AlertDialog
+import android.graphics.Color
+import android.graphics.Typeface
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.widget.AppCompatButton
+import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import com.google.firebase.Timestamp
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FirebaseFirestore
+
+class StaffApprovalFragment : Fragment() {
+
+    private val auth by lazy { FirebaseAuth.getInstance() }
+    private val db   by lazy { FirebaseFirestore.getInstance() }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? = inflater.inflate(R.layout.fragment_staff_approval, container, false)
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        loadPendingOrders(view)
+    }
+
+    private fun loadPendingOrders(view: View) {
+        val container = view.findViewById<LinearLayout>(R.id.approval_container)
+        val tvEmpty   = view.findViewById<TextView>(R.id.tv_no_pending)
+        container?.removeAllViews()
+
+        db.collection("orders")
+            .whereEqualTo("approvalStatus", "pending")
+            .get()
+            .addOnSuccessListener { snapshot ->
+                if (!isAdded) return@addOnSuccessListener
+                if (snapshot.isEmpty) {
+                    tvEmpty?.visibility = View.VISIBLE
+                    return@addOnSuccessListener
+                }
+                tvEmpty?.visibility = View.GONE
+                snapshot.documents.forEach { doc ->
+                    container?.addView(buildApprovalCard(doc, view))
+                }
+            }
+    }
+
+    private fun buildApprovalCard(doc: DocumentSnapshot, parentView: View): CardView {
+        val ctx = requireContext()
+        val dp  = resources.displayMetrics.density
+
+        val card = CardView(ctx).apply {
+            radius        = 12f * dp
+            cardElevation = 3f * dp
+            setCardBackgroundColor(ContextCompat.getColor(ctx, R.color.jt_white))
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { setMargins(0, 0, 0, (12 * dp).toInt()) }
+        }
+
+        val inner = LinearLayout(ctx).apply {
+            orientation = LinearLayout.VERTICAL
+            val p = (16 * dp).toInt()
+            setPadding(p, p, p, p)
+        }
+
+        fun addField(label: String, value: String) {
+            inner.addView(LinearLayout(ctx).apply {
+                orientation = LinearLayout.HORIZONTAL
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply { bottomMargin = (6 * dp).toInt() }
+                addView(TextView(ctx).apply {
+                    text = "$label:  "; textSize = 12f
+                    setTextColor(ContextCompat.getColor(ctx, R.color.jt_gray))
+                    layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                })
+                addView(TextView(ctx).apply {
+                    this.text = value; textSize = 12f
+                    setTextColor(ContextCompat.getColor(ctx, R.color.jt_black))
+                    setTypeface(null, Typeface.BOLD)
+                    layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+                })
+            })
+        }
+
+        addField("Tracking",  doc.getString("trackingNumber") ?: doc.id)
+        addField("Sender",    "${doc.getString("senderFirstName")} ${doc.getString("senderLastName")}")
+        addField("Recipient", "${doc.getString("recipientFirstName")} ${doc.getString("recipientLastName")}")
+        addField("Route",     "${doc.getString("senderCity")} → ${doc.getString("recipientCity")}")
+        addField("Item",      doc.getString("itemName") ?: "—")
+        addField("Weight",    "${doc.getDouble("weight") ?: 0} KG")
+        addField("Total",     "₱ ${"%.2f".format(doc.getDouble("totalAmount") ?: 0.0)}")
+
+        val btnRow = LinearLayout(ctx).apply {
+            orientation = LinearLayout.HORIZONTAL
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { topMargin = (12 * dp).toInt() }
+        }
+
+        val btnApprove = AppCompatButton(ctx).apply {
+            text = "Approve"; textSize = 13f
+            setTextColor(Color.WHITE); isAllCaps = false
+            setBackgroundResource(R.drawable.bg_btn_red)
+            layoutParams = LinearLayout.LayoutParams(0, (42 * dp).toInt(), 1f).apply { marginEnd = (8 * dp).toInt() }
+            setOnClickListener { approveOrder(doc.id, parentView) }
+        }
+
+        val btnReject = AppCompatButton(ctx).apply {
+            text = "Reject"; textSize = 13f
+            setTextColor(ContextCompat.getColor(ctx, R.color.jt_red)); isAllCaps = false
+            setBackgroundResource(R.drawable.bg_btn_outline_red)
+            layoutParams = LinearLayout.LayoutParams(0, (42 * dp).toInt(), 1f)
+            setOnClickListener { showRejectDialog(doc.id, parentView) }
+        }
+
+        btnRow.addView(btnApprove)
+        btnRow.addView(btnReject)
+        inner.addView(btnRow)
+        card.addView(inner)
+        return card
+    }
+
+    private fun approveOrder(orderId: String, view: View) {
+        val staffUid = auth.currentUser?.uid ?: return
+        db.collection("orders").document(orderId)
+            .update(mapOf(
+                "approvalStatus" to "approved",
+                "status"         to "confirmed",
+                "approvedBy"     to staffUid,
+                "approvedAt"     to Timestamp.now()
+            ))
+            .addOnSuccessListener {
+                if (!isAdded) return@addOnSuccessListener
+                db.collection("auditLogs").add(mapOf(
+                    "action"    to "order_approved",
+                    "orderId"   to orderId,
+                    "actorUid"  to staffUid,
+                    "timestamp" to Timestamp.now()
+                ))
+                Toast.makeText(requireContext(), "Order approved!", Toast.LENGTH_SHORT).show()
+                loadPendingOrders(view)
+            }
+    }
+
+    private fun showRejectDialog(orderId: String, view: View) {
+        val staffUid = auth.currentUser?.uid ?: return
+        val et = EditText(requireContext()).apply { hint = "Enter rejection reason..." }
+        AlertDialog.Builder(requireContext())
+            .setTitle("Reject Order")
+            .setMessage("Please provide a reason for rejection:")
+            .setView(et)
+            .setPositiveButton("Reject") { _, _ ->
+                val reason = et.text.toString().trim().ifEmpty { "No reason provided" }
+                db.collection("orders").document(orderId)
+                    .update(mapOf(
+                        "approvalStatus"  to "rejected",
+                        "status"          to "rejected",
+                        "rejectionReason" to reason,
+                        "rejectedBy"      to staffUid,
+                        "rejectedAt"      to Timestamp.now()
+                    ))
+                    .addOnSuccessListener {
+                        if (!isAdded) return@addOnSuccessListener
+                        db.collection("auditLogs").add(mapOf(
+                            "action"    to "order_rejected",
+                            "orderId"   to orderId,
+                            "reason"    to reason,
+                            "actorUid"  to staffUid,
+                            "timestamp" to Timestamp.now()
+                        ))
+                        Toast.makeText(requireContext(), "Order rejected.", Toast.LENGTH_SHORT).show()
+                        loadPendingOrders(view)
+                    }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+}

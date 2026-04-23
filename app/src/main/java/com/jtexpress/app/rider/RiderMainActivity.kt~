@@ -1,0 +1,89 @@
+package com.jtexpress.app.rider
+
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.FirebaseAuth
+import com.jtexpress.app.R
+
+class RiderMainActivity : AppCompatActivity() {
+
+    private var bottomNav: BottomNavigationView? = null
+    private val auth by lazy { FirebaseAuth.getInstance() }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val user = auth.currentUser
+        if (user == null) { goToLogin(); return }
+
+        setContentView(R.layout.activity_rider_main)
+        bottomNav = findViewById(R.id.bottom_nav_rider)
+
+        if (savedInstanceState == null) {
+            loadFragment(RiderHomeFragment())
+        }
+
+        bottomNav!!.setOnItemSelectedListener { item ->
+            clearBackStack()
+            when (item.itemId) {
+                R.id.rider_nav_home       -> { loadFragment(RiderHomeFragment());     true }
+                R.id.rider_nav_deliveries -> { loadFragment(RiderDeliveryFragment()); true }
+                R.id.rider_nav_earnings   -> { loadFragment(RiderEarningsFragment()); true }
+                R.id.rider_nav_profile    -> { loadFragment(RiderProfileFragment());  true }
+                else -> false
+            }
+        }
+    }
+
+    private fun loadFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.rider_fragment_container, fragment)
+            .commit()
+    }
+
+    fun navigateTo(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.rider_fragment_container, fragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
+    private fun clearBackStack() {
+        val fm = supportFragmentManager
+        if (fm.backStackEntryCount > 0) {
+            fm.popBackStackImmediate(
+                fm.getBackStackEntryAt(0).id,
+                androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
+            )
+        }
+    }
+
+    @Suppress("DEPRECATION")
+    override fun onBackPressed() {
+        if (supportFragmentManager.backStackEntryCount > 0) {
+            supportFragmentManager.popBackStack(); return
+        }
+        if (bottomNav!!.selectedItemId != R.id.rider_nav_home) {
+            bottomNav!!.selectedItemId = R.id.rider_nav_home
+        } else {
+            super.onBackPressed(); finishAffinity()
+        }
+    }
+
+    fun logout() {
+        getSharedPreferences("JTExpressPrefs", Context.MODE_PRIVATE).edit().clear().apply()
+        auth.signOut()
+        goToLogin()
+    }
+
+    private fun goToLogin() {
+        startActivity(Intent(this, LoginActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        })
+        finish()
+    }
+}

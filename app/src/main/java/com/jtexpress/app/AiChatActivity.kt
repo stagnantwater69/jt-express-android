@@ -16,6 +16,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.jtexpress.app.shared.ChatAdapter
+import com.jtexpress.app.shared.ChatMessage
 import kotlinx.coroutines.*
 import org.json.JSONArray
 import org.json.JSONObject

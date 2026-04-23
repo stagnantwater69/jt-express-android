@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F5F5F5">
+
+    <!-- Tab Row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:orientation="horizontal"
+        android:background="@color/jt_white"
+        android:elevation="4dp">
+
+        <TextView
+            android:id="@+id/tab_active"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Active"
+            android:gravity="center"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@color/jt_red"
+            android:background="?attr/selectableItemBackground" />
+
+        <TextView
+            android:id="@+id/tab_completed"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Completed"
+            android:gravity="center"
+            android:textSize="14sp"
+            android:textColor="@color/jt_gray"
+            android:background="?attr/selectableItemBackground" />
+
+    </LinearLayout>
+
+    <!-- Empty State -->
+    <TextView
+        android:id="@+id/tv_no_deliveries"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No active deliveries."
+        android:gravity="center"
+        android:padding="32dp"
+        android:textSize="14sp"
+        android:textColor="@color/jt_gray"
+        android:visibility="gone" />
+
+    <!-- Delivery Cards Container -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/delivery_list_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp" />
+
+    </ScrollView>
+
+</LinearLayout>

@@ -11,6 +11,10 @@
     <!-- Required for FloatingChatService to run as a foreground service -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
+    <!-- Camera and storage for rider photo capture -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -23,7 +27,7 @@
              SPLASH SCREEN
         ════════════════════════════════════════ -->
         <activity
-            android:name=".SplashActivity"
+            android:name=".shared.SplashActivity"
             android:theme="@style/Theme.JTExpress.Splash"
             android:exported="true"
             android:screenOrientation="portrait">
@@ -34,35 +38,44 @@
         </activity>
 
         <!-- ════════════════════════════════════════
+             ROLE ROUTER
+             (reads Firestore role and redirects to correct dashboard)
+        ════════════════════════════════════════ -->
+        <activity
+            android:name=".RoleRouterActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+
+        <!-- ════════════════════════════════════════
              AUTH SCREENS
         ════════════════════════════════════════ -->
         <activity
-            android:name=".LoginActivity"
+            android:name=".shared.LoginActivity"
             android:theme="@style/Theme.JTExpress.Login"
             android:exported="false"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
 
         <activity
-            android:name=".RegisterActivity"
+            android:name=".shared.RegisterActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
 
         <activity
-            android:name=".ForgotPasswordActivity"
+            android:name=".shared.ForgotPasswordActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
 
         <activity
-            android:name=".EmailVerificationActivity"
+            android:name=".shared.EmailVerificationActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
 
         <!-- ════════════════════════════════════════
-             MAIN DASHBOARD
+             CUSTOMER DASHBOARD
         ════════════════════════════════════════ -->
         <activity
             android:name=".MainActivity"
@@ -70,7 +83,32 @@
             android:screenOrientation="portrait"/>
 
         <!-- ════════════════════════════════════════
+             RIDER DASHBOARD
+        ════════════════════════════════════════ -->
+        <activity
+            android:name=".RiderMainActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+
+        <!-- ════════════════════════════════════════
+             STAFF DASHBOARD
+        ════════════════════════════════════════ -->
+        <activity
+            android:name=".StaffMainActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+
+        <!-- ════════════════════════════════════════
+             ADMIN DASHBOARD
+        ════════════════════════════════════════ -->
+        <activity
+            android:name=".AdminMainActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+
+        <!-- ════════════════════════════════════════
              AI CHATBOT SCREEN
+             (shared — accessible by all roles)
         ════════════════════════════════════════ -->
         <activity
             android:name=".AiChatActivity"

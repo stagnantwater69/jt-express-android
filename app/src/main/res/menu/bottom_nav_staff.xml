@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/staff_nav_home"
+        android:icon="@android:drawable/ic_menu_compass"
+        android:title="Home"/>
+    <item
+        android:id="@+id/staff_nav_orders"
+        android:icon="@android:drawable/ic_menu_agenda"
+        android:title="Orders"/>
+    <item
+        android:id="@+id/staff_nav_approval"
+        android:icon="@android:drawable/ic_menu_info_details"
+        android:title="Approval"/>
+    <item
+        android:id="@+id/staff_nav_riders"
+        android:icon="@android:drawable/ic_menu_mapmode"
+        android:title="Riders"/>
+    <item
+        android:id="@+id/staff_nav_profile"
+        android:icon="@android:drawable/ic_menu_myplaces"
+        android:title="Profile"/>
+</menu>

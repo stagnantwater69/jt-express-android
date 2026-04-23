@@ -1,4 +1,4 @@
-package com.jtexpress.app
+package com.jtexpress.app.shared
 
 data class ChatMessage(
     val text: String,
