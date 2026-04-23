@@ -3,9 +3,6 @@
     package="com.jtexpress.app">
 
     <!-- Internet for Firebase + Gemini API calls -->
-    <uses-feature
-        android:name="android.hardware.camera"
-        android:required="false" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <!-- Required for the floating AI bubble (draw over other apps) -->
@@ -45,7 +42,7 @@
              (reads Firestore role and redirects to correct dashboard)
         ════════════════════════════════════════ -->
         <activity
-            android:name=".shared.RoleRouterActivity"
+            android:name=".RoleRouterActivity"
             android:exported="false"
             android:screenOrientation="portrait"/>
 
@@ -89,7 +86,7 @@
              RIDER DASHBOARD
         ════════════════════════════════════════ -->
         <activity
-            android:name=".rider.RiderMainActivity"
+            android:name=".RiderMainActivity"
             android:exported="false"
             android:screenOrientation="portrait"/>
 
@@ -105,7 +102,7 @@
              ADMIN DASHBOARD
         ════════════════════════════════════════ -->
         <activity
-            android:name=".admin.AdminMainActivity"
+            android:name=".AdminMainActivity"
             android:exported="false"
             android:screenOrientation="portrait"/>
 
