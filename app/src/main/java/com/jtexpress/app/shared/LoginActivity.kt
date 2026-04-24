@@ -16,8 +16,6 @@ import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.jtexpress.app.R
-import com.jtexpress.app.shared.ForgotPasswordActivity
-import com.jtexpress.app.shared.RegisterActivity
 
 class LoginActivity : AppCompatActivity() {
 
@@ -40,7 +38,6 @@ class LoginActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         db   = FirebaseFirestore.getInstance()
 
-        // Already logged in and verified → go to RoleRouter (not MainActivity directly)
         val currentUser = auth!!.currentUser
         if (currentUser != null && currentUser.isEmailVerified) {
             navigateToRoleRouter()
@@ -104,7 +101,7 @@ class LoginActivity : AppCompatActivity() {
         val password = manualTrim(etPassword!!.text?.toString() ?: "")
         var isValid  = true
 
-        tilEmail!!.error = null
+        tilEmail!!.error    = null
         tilPassword!!.error = null
 
         if (email.isEmpty()) {
@@ -138,7 +135,10 @@ class LoginActivity : AppCompatActivity() {
                     return@addOnSuccessListener
                 }
 
-                // Fetch Firestore data, save to prefs, then route via RoleRouterActivity
+                // Fetch Firestore profile. On success OR failure we route to RoleRouter —
+                // RoleRouter will re-read Firestore itself and is the single source of truth
+                // for role-based navigation. We only cache here so the greeting/name works
+                // offline on subsequent launches.
                 db!!.collection("users").document(user.uid).get()
                     .addOnSuccessListener { doc ->
                         if (doc != null && doc.exists()) {
@@ -149,15 +149,26 @@ class LoginActivity : AppCompatActivity() {
                             else "$firstName $middleName $lastName"
                             val displayName = manualTrim(fullName)
                             val phone = doc.getString("phone") ?: ""
-                            val role  = doc.getString("role") ?: "customer"
+
+                            // FIX: read the actual role from Firestore — never default to
+                            // "customer" here, because a rider/staff/admin would be silently
+                            // downgraded. If the field is missing, leave the cache empty and
+                            // let RoleRouter decide (it will re-read Firestore).
+                            val role = doc.getString("role") ?: ""
+
                             saveUserToPrefs(email, displayName, phone, role, user.uid)
                         } else {
-                            saveUserToPrefs(email, "", "", "customer", user.uid)
+                            // Doc doesn't exist yet (race condition during first login after
+                            // registration). Save what we know; RoleRouter will resolve role.
+                            saveUserToPrefs(email, "", "", "", user.uid)
                         }
                         navigateToRoleRouter()
                     }
                     .addOnFailureListener {
-                        saveUserToPrefs(email, "", "", "customer", user.uid)
+                        // FIX: on Firestore failure, do NOT default to "customer".
+                        // Save only the UID so RoleRouter can try again, or fall back to
+                        // whatever role is already cached from a previous successful login.
+                        saveUidOnly(user.uid)
                         navigateToRoleRouter()
                     }
             }
@@ -166,27 +177,41 @@ class LoginActivity : AppCompatActivity() {
                 btnLogin!!.text      = "LOG IN"
                 val msg = e.message ?: ""
                 tilPassword!!.error = when {
-                    msg.contains("no user record")    -> "No account found with this email."
+                    msg.contains("no user record")      -> "No account found with this email."
                     msg.contains("password is invalid") -> "Incorrect password. Try again."
-                    msg.contains("blocked")           -> "Too many attempts. Try again later."
-                    msg.contains("network")           -> "Network error. Check your connection."
-                    else                              -> "Login failed. Please try again."
+                    msg.contains("blocked")             -> "Too many attempts. Try again later."
+                    msg.contains("network")             -> "Network error. Check your connection."
+                    else                                -> "Login failed. Please try again."
                 }
             }
     }
 
-    private fun saveUserToPrefs(email: String, name: String, phone: String, role: String, uid: String) {
+    private fun saveUserToPrefs(
+        email: String, name: String, phone: String, role: String, uid: String
+    ) {
         getSharedPreferences("JTExpressPrefs", MODE_PRIVATE).edit()
             .putBoolean("is_logged_in", true)
             .putString("user_uid",   uid)
             .putString("user_email", email)
             .putString("user_name",  name)
             .putString("user_phone", phone)
-            .putString("user_role",  role)
+            // Only overwrite cached role when we have a real value, so a previously
+            // cached rider/staff/admin role isn't wiped by an empty string on Firestore success.
+            .apply {
+                if (role.isNotEmpty()) putString("user_role", role)
+            }
             .apply()
     }
 
-    // KEY CHANGE: routes to RoleRouterActivity, not MainActivity
+    // FIX: separate helper that only writes the UID, leaving the existing cached
+    // role intact so riders/staff/admins aren't downgraded on a flaky connection.
+    private fun saveUidOnly(uid: String) {
+        getSharedPreferences("JTExpressPrefs", MODE_PRIVATE).edit()
+            .putBoolean("is_logged_in", true)
+            .putString("user_uid", uid)
+            .apply()
+    }
+
     private fun navigateToRoleRouter() {
         startActivity(
             Intent(this, RoleRouterActivity::class.java).apply {

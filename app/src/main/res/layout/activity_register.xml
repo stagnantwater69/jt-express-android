@@ -127,7 +127,33 @@
                 android:orientation="vertical"
                 android:padding="24dp">
 
-                <!-- NAME SECTION LABEL -->
+                <!-- ── ROLE SELECTOR ── -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Account Type"
+                    android:textColor="@color/jt_red"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.08"
+                    android:layout_marginBottom="8dp"/>
+
+                <LinearLayout
+                    android:id="@+id/ll_role_selector"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="18dp"/>
+                <!-- Role chip TextViews are added programmatically -->
+
+                <!-- Divider -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/jt_divider"
+                    android:layout_marginBottom="16dp"/>
+
+                <!-- ── NAME SECTION ── -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -166,7 +192,6 @@
                     android:orientation="horizontal"
                     android:layout_marginTop="12dp">
 
-                    <!-- Middle Initial (optional) -->
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/til_middlename"
                         style="@style/JT.InputLayout"
@@ -192,7 +217,6 @@
                             android:maxLength="20"/>
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <!-- Last Name -->
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/til_lastname"
                         style="@style/JT.InputLayout"

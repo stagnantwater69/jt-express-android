@@ -8,6 +8,7 @@ import android.text.style.ForegroundColorSpan
 import android.util.Patterns
 import android.widget.CheckBox
 import android.widget.ImageButton
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -49,14 +50,21 @@ class RegisterActivity : AppCompatActivity() {
     private var btnBack: ImageButton? = null
     private var tvLogin: TextView? = null
 
+    // Role selection
+    private var selectedRole: String = "customer"
+    private val roleOptions = listOf("customer", "rider", "staff", "admin")
+    private val roleLabels  = listOf("Customer", "Rider", "Staff", "Admin")
+    private val roleViews   = mutableListOf<TextView>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
         auth = FirebaseAuth.getInstance()
-        db = FirebaseFirestore.getInstance()
+        db   = FirebaseFirestore.getInstance()
 
         initViews()
+        setupRoleSelector()
         setupClickListeners()
         styleLoginText()
     }
@@ -86,6 +94,52 @@ class RegisterActivity : AppCompatActivity() {
         btnRegister = findViewById(R.id.btn_register)
         btnBack     = findViewById(R.id.btn_back)
         tvLogin     = findViewById(R.id.tv_login)
+    }
+
+    // ── Role Selector ─────────────────────────────────────────────
+    private fun setupRoleSelector() {
+        val container = findViewById<LinearLayout>(R.id.ll_role_selector) ?: return
+        val dm        = resources.displayMetrics
+        val dp        = dm.density
+
+        roleViews.clear()
+        roleOptions.forEachIndexed { index, role ->
+            val tv = TextView(this).apply {
+                text      = roleLabels[index]
+                textSize  = 12f
+                isAllCaps = false
+                gravity   = android.view.Gravity.CENTER
+                setPadding((12 * dp).toInt(), (8 * dp).toInt(), (12 * dp).toInt(), (8 * dp).toInt())
+                layoutParams = LinearLayout.LayoutParams(
+                    0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f
+                ).apply { setMargins((2 * dp).toInt(), 0, (2 * dp).toInt(), 0) }
+                setBackgroundResource(
+                    if (role == selectedRole) R.drawable.chip_active_bg
+                    else R.drawable.chip_inactive_bg
+                )
+                setTextColor(
+                    if (role == selectedRole) ContextCompat.getColor(context, R.color.jt_white)
+                    else ContextCompat.getColor(context, R.color.jt_gray)
+                )
+                setOnClickListener { selectRole(role) }
+            }
+            roleViews.add(tv)
+            container.addView(tv)
+        }
+    }
+
+    private fun selectRole(role: String) {
+        selectedRole = role
+        roleViews.forEachIndexed { index, tv ->
+            val isSelected = roleOptions[index] == role
+            tv.setBackgroundResource(
+                if (isSelected) R.drawable.chip_active_bg else R.drawable.chip_inactive_bg
+            )
+            tv.setTextColor(
+                if (isSelected) ContextCompat.getColor(this, R.color.jt_white)
+                else ContextCompat.getColor(this, R.color.jt_gray)
+            )
+        }
     }
 
     private fun setupClickListeners() {
@@ -126,67 +180,46 @@ class RegisterActivity : AppCompatActivity() {
         tilPassword!!.error   = null
         tilConfirmPassword!!.error = null
 
-        // First name
         if (firstName.isEmpty()) {
-            tilFirstName!!.error = "First name is required"
-            isValid = false
+            tilFirstName!!.error = "First name is required"; isValid = false
         } else if (firstName.length < 2) {
-            tilFirstName!!.error = "Enter a valid first name"
-            isValid = false
+            tilFirstName!!.error = "Enter a valid first name"; isValid = false
         }
 
-        // Middle name — OPTIONAL, only validate if not empty
         if (middleName.isNotEmpty() && middleName.length < 2) {
-            tilMiddleName!!.error = "Enter a valid middle name"
-            isValid = false
+            tilMiddleName!!.error = "Enter a valid middle name"; isValid = false
         }
 
-        // Last name
         if (lastName.isEmpty()) {
-            tilLastName!!.error = "Last name is required"
-            isValid = false
+            tilLastName!!.error = "Last name is required"; isValid = false
         } else if (lastName.length < 2) {
-            tilLastName!!.error = "Enter a valid last name"
-            isValid = false
+            tilLastName!!.error = "Enter a valid last name"; isValid = false
         }
 
-        // Email
         if (email.isEmpty()) {
-            tilEmail!!.error = "Email is required"
-            isValid = false
+            tilEmail!!.error = "Email is required"; isValid = false
         } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            tilEmail!!.error = "Enter a valid email address"
-            isValid = false
+            tilEmail!!.error = "Enter a valid email address"; isValid = false
         }
 
-        // Phone
         if (phone.isEmpty()) {
-            tilPhone!!.error = "Phone number is required"
-            isValid = false
+            tilPhone!!.error = "Phone number is required"; isValid = false
         } else if (phone.length < 10) {
-            tilPhone!!.error = "Enter a valid phone number (min 10 digits)"
-            isValid = false
+            tilPhone!!.error = "Enter a valid phone number (min 10 digits)"; isValid = false
         }
 
-        // Password
         if (password.isEmpty()) {
-            tilPassword!!.error = "Password is required"
-            isValid = false
+            tilPassword!!.error = "Password is required"; isValid = false
         } else if (password.length < 6) {
-            tilPassword!!.error = "Password must be at least 6 characters"
-            isValid = false
+            tilPassword!!.error = "Password must be at least 6 characters"; isValid = false
         }
 
-        // Confirm password
         if (confirmPass.isEmpty()) {
-            tilConfirmPassword!!.error = "Please confirm your password"
-            isValid = false
+            tilConfirmPassword!!.error = "Please confirm your password"; isValid = false
         } else if (password != confirmPass) {
-            tilConfirmPassword!!.error = "Passwords do not match"
-            isValid = false
+            tilConfirmPassword!!.error = "Passwords do not match"; isValid = false
         }
 
-        // Terms
         if (!cbTerms!!.isChecked) {
             Toast.makeText(this, "Please agree to the Terms of Service", Toast.LENGTH_SHORT).show()
             isValid = false
@@ -204,57 +237,68 @@ class RegisterActivity : AppCompatActivity() {
         val phone      = manualTrim(etPhone!!.text.toString())
         val password   = manualTrim(etPassword!!.text.toString())
 
-        // Build full name for display
-        val fullName: String
-        if (middleName.isEmpty()) {
-            fullName = "$firstName $lastName"
-        } else {
-            fullName = "$firstName $middleName $lastName"
-        }
+        val fullName = if (middleName.isEmpty()) "$firstName $lastName"
+        else "$firstName $middleName $lastName"
 
         btnRegister!!.isEnabled = false
         btnRegister!!.text = "Creating account..."
 
-        // Step 1: Create Firebase Auth user
         auth!!.createUserWithEmailAndPassword(email, password)
             .addOnSuccessListener { result ->
                 val uid = result.user!!.uid
 
-                // Step 2: Send verification email
                 result.user!!.sendEmailVerification()
-                    .addOnSuccessListener {
-                        android.util.Log.d("AUTH", "Verification email sent to $email")
-                    }
                     .addOnFailureListener { e ->
                         android.util.Log.e("AUTH", "Failed to send verification: ${e.message}")
                     }
 
-                // Step 3: Save all name parts separately + full name to Firestore
-                val userDoc = HashMap<String, Any>()
-                userDoc["uid"]        = uid
-                userDoc["firstName"]  = firstName
-                userDoc["middleName"] = middleName   // empty string if not provided
-                userDoc["lastName"]   = lastName
-                userDoc["fullName"]   = fullName     // combined for display
-                userDoc["email"]      = email
-                userDoc["phone"]      = phone
-                userDoc["role"]       = "customer"
-                userDoc["carrots"]    = 0
-                userDoc["vouchers"]   = 0
-                userDoc["createdAt"]  = Timestamp.now()
+                // Riders and staff/admin don't need email verification flow
+                // but we still send the email for consistency
+                val needsVerification = selectedRole == "customer"
 
-                // Step 4: Save to Firestore
+                val userDoc = hashMapOf<String, Any>(
+                    "uid"        to uid,
+                    "firstName"  to firstName,
+                    "middleName" to middleName,
+                    "lastName"   to lastName,
+                    "fullName"   to fullName,
+                    "email"      to email,
+                    "phone"      to phone,
+                    "role"       to selectedRole,
+                    "carrots"    to 0,
+                    "vouchers"   to 0,
+                    // Riders/staff start as active; customers are always active
+                    "isActive"   to true,
+                    "createdAt"  to Timestamp.now()
+                )
+
                 db!!.collection("users").document(uid)
                     .set(userDoc)
                     .addOnSuccessListener {
-                        val i = Intent(this, EmailVerificationActivity::class.java)
-                        i.putExtra("registered_email", email)
-                        i.putExtra("registered_name", fullName)
-                        i.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                        startActivity(i)
+                        if (needsVerification) {
+                            // Customer → email verification flow
+                            val i = Intent(this, EmailVerificationActivity::class.java)
+                            i.putExtra("registered_email", email)
+                            i.putExtra("registered_name", fullName)
+                            i.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                            startActivity(i)
+                        } else {
+                            // Rider / Staff / Admin → go straight to login
+                            // (Admin may want to manually activate staff/rider accounts)
+                            Toast.makeText(
+                                this,
+                                "Account created as ${selectedRole.replaceFirstChar { it.uppercase() }}! Please log in.",
+                                Toast.LENGTH_LONG
+                            ).show()
+                            val i = Intent(this, LoginActivity::class.java)
+                            i.putExtra("registered_email", email)
+                            i.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                            startActivity(i)
+                        }
                         finish()
                     }
                     .addOnFailureListener {
+                        // Firestore write failed but auth succeeded — still proceed
                         Toast.makeText(
                             this,
                             "Account created! Please verify your email.",
@@ -272,16 +316,13 @@ class RegisterActivity : AppCompatActivity() {
                 btnRegister!!.isEnabled = true
                 btnRegister!!.text = "CREATE ACCOUNT"
 
-                val msg = e.message
-                val message: String
-                if (msg != null && msg.contains("email address is already in use")) {
-                    message = "This email is already registered. Try logging in."
-                } else if (msg != null && msg.contains("badly formatted")) {
-                    message = "Invalid email format."
-                } else if (msg != null && msg.contains("network")) {
-                    message = "Network error. Check your connection."
-                } else {
-                    message = "Registration failed. Please try again."
+                val msg = e.message ?: ""
+                val message = when {
+                    msg.contains("email address is already in use") ->
+                        "This email is already registered. Try logging in."
+                    msg.contains("badly formatted") -> "Invalid email format."
+                    msg.contains("network")         -> "Network error. Check your connection."
+                    else                            -> "Registration failed. Please try again."
                 }
                 tilEmail!!.error = message
             }
@@ -295,8 +336,7 @@ class RegisterActivity : AppCompatActivity() {
         val start = fullText.indexOf("Log In")
         spannable.setSpan(
             ForegroundColorSpan(redColor),
-            start,
-            start + "Log In".length,
+            start, start + "Log In".length,
             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
         )
         tvLogin!!.text = spannable

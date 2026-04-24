@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.jtexpress.app.shared.LoginActivity
 import com.jtexpress.app.R
 
 class EmailVerificationActivity : AppCompatActivity() {
@@ -33,7 +34,7 @@ class EmailVerificationActivity : AppCompatActivity() {
     private var autoCheckRunnable: Runnable? = null
 
     private var userEmail: String = ""
-    private var userName: String  = ""
+    private var userName: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,20 +59,25 @@ class EmailVerificationActivity : AppCompatActivity() {
         tvBackToLogin  = findViewById(R.id.tv_back_to_login)
         btnBack        = findViewById(R.id.btn_back)
 
-        if (userEmail.isNotEmpty()) tvEmailDisplay!!.text = userEmail
+        if (userEmail.isNotEmpty()) {
+            tvEmailDisplay!!.text = userEmail
+        }
     }
 
     private fun setupClickListeners() {
-        btnBack!!.setOnClickListener      { signOutAndGoToLogin() }
-        btnVerified!!.setOnClickListener  { checkVerification() }
-        btnResend!!.setOnClickListener    { resendVerificationEmail() }
-        tvBackToLogin!!.setOnClickListener{ signOutAndGoToLogin() }
+        btnBack!!.setOnClickListener { signOutAndGoToLogin() }
+        btnVerified!!.setOnClickListener { checkVerification() }
+        btnResend!!.setOnClickListener { resendVerificationEmail() }
+        tvBackToLogin!!.setOnClickListener { signOutAndGoToLogin() }
     }
 
     // ── Check if email is verified ───────────────────────────────
     private fun checkVerification() {
         val user = auth!!.currentUser
-        if (user == null) { signOutAndGoToLogin(); return }
+        if (user == null) {
+            signOutAndGoToLogin()
+            return
+        }
 
         btnVerified!!.isEnabled = false
         btnVerified!!.text = "Checking..."
@@ -81,6 +87,7 @@ class EmailVerificationActivity : AppCompatActivity() {
                 val freshUser = auth!!.currentUser
                 if (freshUser != null && freshUser.isEmailVerified) {
                     stopAutoCheck()
+                    // ✅ Fetch user data from Firestore BEFORE going to Main
                     fetchUserDataAndProceed(freshUser.uid)
                 } else {
                     btnVerified!!.isEnabled = true
@@ -111,40 +118,26 @@ class EmailVerificationActivity : AppCompatActivity() {
                     val lastName   = doc.getString("lastName") ?: ""
                     val email      = doc.getString("email") ?: userEmail
                     val phone      = doc.getString("phone") ?: ""
+                    val role       = doc.getString("role") ?: "customer"
 
-                    // FIX: read the actual role from Firestore — never hardcode "customer".
-                    // If the field is genuinely absent (old doc migration), fall back to
-                    // "customer" only as a last resort and log it so it can be fixed in DB.
-                    val role = doc.getString("role").let {
-                        if (it.isNullOrEmpty()) {
-                            android.util.Log.w("EmailVerification",
-                                "User $uid has no 'role' field — defaulting to customer. Fix in Firestore.")
-                            "customer"
-                        } else it
+                    // Build full name
+                    val fullName: String
+                    if (middleName.isEmpty()) {
+                        fullName = "$firstName $lastName"
+                    } else {
+                        fullName = "$firstName $middleName $lastName"
                     }
 
-                    val fullName    = if (middleName.isEmpty()) "$firstName $lastName"
-                    else "$firstName $middleName $lastName"
                     val displayName = manualTrim(fullName)
-
                     saveUserToPrefs(email, displayName, phone, role, uid)
                 } else {
-                    // FIX: Firestore doc missing after registration (race condition).
-                    // Save what we have from registration intent extras.
-                    // Role defaults to "customer" since only customers self-register —
-                    // this is the one legitimate use of "customer" as a default.
-                    android.util.Log.w("EmailVerification",
-                        "No Firestore doc for $uid after verification — using registration data.")
+                    // No Firestore doc — save what we have from registration
                     saveUserToPrefs(userEmail, userName, "", "customer", uid)
                 }
                 goToLogin()
             }
-            .addOnFailureListener { e ->
-                // FIX: Firestore unreachable. Do NOT silently downgrade a rider/staff/admin.
-                // Save only what came from the registration screen (always "customer" for
-                // self-registered users). The role will be re-read by RoleRouterActivity.
-                android.util.Log.e("EmailVerification",
-                    "Firestore fetch failed for $uid: ${e.message}")
+            .addOnFailureListener {
+                // Firestore failed — use registration data as fallback
                 saveUserToPrefs(userEmail, userName, "", "customer", uid)
                 goToLogin()
             }
@@ -152,19 +145,24 @@ class EmailVerificationActivity : AppCompatActivity() {
 
     // ── Save to SharedPreferences ────────────────────────────────
     private fun saveUserToPrefs(
-        email: String, name: String, phone: String, role: String, uid: String
+        email: String,
+        name: String,
+        phone: String,
+        role: String,
+        uid: String
     ) {
         val prefs: SharedPreferences = getSharedPreferences("JTExpressPrefs", MODE_PRIVATE)
-        prefs.edit()
-            .putBoolean("is_logged_in", true)
-            .putString("user_uid",   uid)
-            .putString("user_email", email)
-            .putString("user_name",  name)
-            .putString("user_phone", phone)
-            .putString("user_role",  role)
-            .apply()
+        val editor = prefs.edit()
+        editor.putBoolean("is_logged_in", true)
+        editor.putString("user_uid",   uid)
+        editor.putString("user_email", email)
+        editor.putString("user_name",  name)
+        editor.putString("user_phone", phone)
+        editor.putString("user_role",  role)
+        editor.apply()
     }
 
+    // ── Manual trim ──────────────────────────────────────────────
     private fun manualTrim(input: String): String {
         var start = 0
         var end = input.length
@@ -176,29 +174,36 @@ class EmailVerificationActivity : AppCompatActivity() {
     // ── Resend verification email ────────────────────────────────
     private fun resendVerificationEmail() {
         val user = auth!!.currentUser
-        if (user == null) { signOutAndGoToLogin(); return }
+        if (user == null) {
+            signOutAndGoToLogin()
+            return
+        }
 
         btnResend!!.isEnabled = false
 
         user.sendEmailVerification()
             .addOnSuccessListener {
                 Toast.makeText(this,
-                    "Verification email resent! Check your inbox.", Toast.LENGTH_LONG).show()
+                    "Verification email resent! Check your inbox.",
+                    Toast.LENGTH_LONG).show()
                 startResendCooldown()
             }
             .addOnFailureListener {
                 btnResend!!.isEnabled = true
                 Toast.makeText(this,
-                    "Failed to resend. Try again later.", Toast.LENGTH_SHORT).show()
+                    "Failed to resend. Try again later.",
+                    Toast.LENGTH_SHORT).show()
             }
     }
 
     // ── 60s resend cooldown timer ────────────────────────────────
     private fun startResendCooldown() {
         tvResendTimer!!.visibility = View.VISIBLE
+
         resendTimer = object : CountDownTimer(60000, 1000) {
-            override fun onTick(ms: Long) {
-                tvResendTimer!!.text = "Resend available in ${ms / 1000}s"
+            override fun onTick(millisUntilFinished: Long) {
+                val seconds = millisUntilFinished / 1000
+                tvResendTimer!!.text = "Resend available in ${seconds}s"
             }
             override fun onFinish() {
                 btnResend!!.isEnabled = true
@@ -213,11 +218,14 @@ class EmailVerificationActivity : AppCompatActivity() {
         autoCheckHandler = Handler(Looper.getMainLooper())
         autoCheckRunnable = object : Runnable {
             override fun run() {
-                auth!!.currentUser?.reload()?.addOnSuccessListener {
-                    val freshUser = auth!!.currentUser
-                    if (freshUser != null && freshUser.isEmailVerified) {
-                        stopAutoCheck()
-                        fetchUserDataAndProceed(freshUser.uid)
+                val user = auth!!.currentUser
+                if (user != null) {
+                    user.reload().addOnSuccessListener {
+                        val freshUser = auth!!.currentUser
+                        if (freshUser != null && freshUser.isEmailVerified) {
+                            stopAutoCheck()
+                            fetchUserDataAndProceed(freshUser.uid)
+                        }
                     }
                 }
                 autoCheckHandler!!.postDelayed(this, 5000)
@@ -227,25 +235,28 @@ class EmailVerificationActivity : AppCompatActivity() {
     }
 
     private fun stopAutoCheck() {
-        autoCheckHandler?.removeCallbacks(autoCheckRunnable ?: return)
+        if (autoCheckHandler != null && autoCheckRunnable != null) {
+            autoCheckHandler!!.removeCallbacks(autoCheckRunnable!!)
+        }
     }
 
     // ── Navigate to Login with success message ───────────────────
     private fun goToLogin() {
-        Toast.makeText(this, "Email verified! Please log in.", Toast.LENGTH_LONG).show()
-        startActivity(Intent(this, LoginActivity::class.java).apply {
-            putExtra("registered_email", userEmail)
-            putExtra("show_success", true)
-            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-        })
+        Toast.makeText(this,
+            "Email verified! Please log in.", Toast.LENGTH_LONG).show()
+        val i = Intent(this, LoginActivity::class.java)
+        i.putExtra("registered_email", userEmail)
+        i.putExtra("show_success", true)
+        i.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        startActivity(i)
         finish()
     }
 
     private fun signOutAndGoToLogin() {
         auth!!.signOut()
-        startActivity(Intent(this, LoginActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-        })
+        val i = Intent(this, LoginActivity::class.java)
+        i.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        startActivity(i)
         finish()
     }
 
